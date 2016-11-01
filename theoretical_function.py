@@ -1,6 +1,25 @@
+import math
 
-# In this file, we need the function
 
-# eta F[ e (V-V_0) / k T ]
+def modified_li2(x):
+    accumulator = 0.0
+    sign = -1.0
+    # I really do not like the way I have implemented this.
+    # Hard-coding 50 terms is bogus.
+    for idx in range(1, 50):
+        n = float(idx)
+        accumulator += sign * math.exp(n * x) / (n * n)
+        sign *= -1.0
 
-# including its first and second derivatives wrt eta and V_0.
+    return accumulator
+
+
+def f(x):
+    math.pi * math.pi + 3.0 * x * x + 6.0 * modified_li2(x)
+
+
+def make_photocurrent_func(eta, x0):
+    def photocurrent_func(x):
+        return eta * f(x - x0)
+
+    return photocurrent_func
